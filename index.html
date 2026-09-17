@@ -111,6 +111,28 @@
     <p class="privacy" style="margin-top:.6rem;"><strong>Structured/record dtypes</strong> (NumPy arrays with named fields) aren't supported yet &mdash; plain numeric, boolean, complex, and string dtypes are.</p>
   </div>
 
+
+  <div class="card faq">
+    <h2>Troubleshooting</h2>
+    <details><summary>Excel cannot open large .npy array as CSV</summary>
+      <p>A big array (say, a few million cells) can produce a CSV that's slow or unwieldy for a spreadsheet to open. This page warns before building an unusually large export and blocks anything past a hard limit &mdash; if you hit that, try exporting a smaller variable or a narrower slice.</p>
+    </details>
+    <details><summary>dtype shows an error, or "structured/record dtypes are not supported"</summary>
+      <p>NumPy's structured/record dtypes (arrays with multiple named fields per element, like a mini table packed into one array) aren't parsed by this page yet. Plain numeric, boolean, complex, and string dtypes all work.</p>
+    </details>
+  </div>
+
+  <div class="card cli">
+    <h2>Prefer the command line?</h2>
+    <div class="cli-block">python -c "
+import numpy as np
+a = np.load('file.npy')
+np.savetxt('file.csv', a, delimiter=',')
+"</div>
+    <p class="privacy">For a <code>.npz</code> archive, load it with <code>np.load('file.npz')</code> and loop over <code>.files</code> to save each array separately.</p>
+  </div>
+
+
   <div id="ad-slot"></div>
 </main>
 <script src="fflate.bundle.js"></script>
