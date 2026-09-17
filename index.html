@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free NPY / NPZ to CSV Converter — View &amp; Export NumPy Arrays Online</title>
+<meta name="description" content="Open a NumPy .npy or .npz array file, inspect its dtype, shape, and contents, preview the data as a table, and export it to CSV, entirely in your browser. Nothing is uploaded.">
+<link rel="stylesheet" href="https://gazetheeupon.github.io/shared-assets/theme.css?v=2">
+<link rel="canonical" href="https://gazetheeupon.github.io/npy-to-csv/">
+<meta property="og:title" content="Free NPY / NPZ to CSV Converter">
+<meta property="og:description" content="Preview a NumPy .npy/.npz array's dtype, shape and values, then export it to CSV. Entirely in your browser, nothing uploaded.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://gazetheeupon.github.io/npy-to-csv/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Free NPY / NPZ to CSV Converter">
+<meta name="twitter:description" content="Preview a NumPy .npy/.npz array's dtype, shape and values, then export it to CSV. Entirely in your browser, nothing uploaded.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Free NPY / NPZ to CSV Converter",
+  "url": "https://gazetheeupon.github.io/npy-to-csv/",
+  "description": "Open a NumPy .npy or .npz array file, inspect its dtype and shape, preview the data, and export it to CSV, entirely in your browser.",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Any (runs in web browser)",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+}
+</script>
+<style>
+  :root{--bg:#0f1720;--card:#1a2532;--text:#e8edf2;--muted:#93a3b3;--accent:#4fa8ff;--border:#2a3745;}
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;}
+  header{padding:2rem 1rem 1rem;text-align:center;}
+  h1{font-size:1.6rem;margin:0 0 .4rem;}
+  p.sub{color:var(--muted);margin:0 auto;max-width:660px;}
+  main{max-width:900px;margin:0 auto;padding:1.5rem 1rem 3rem;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1.2rem;}
+  .dropzone{border:2px dashed var(--border);border-radius:10px;padding:2.2rem 1rem;text-align:center;cursor:pointer;transition:border-color .15s;}
+  .dropzone.drag{border-color:var(--accent);}
+  .dropzone input{display:none;}
+  .dropzone .hint{color:var(--muted);font-size:.9rem;margin-top:.4rem;}
+  .fname{font-size:.9rem;color:var(--text);margin-top:.6rem;word-break:break-all;}
+  #status{color:var(--muted);font-size:.9rem;margin-top:.8rem;min-height:1.2em;white-space:pre-line;}
+  #status.error{color:#ff8080;}
+  h2{font-size:1rem;margin:0 0 .8rem;color:var(--text);}
+  .meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:.4rem 1.2rem;font-size:.88rem;}
+  .meta-grid dt{color:var(--muted);}
+  .meta-grid dd{margin:0;word-break:break-word;}
+  table{width:100%;border-collapse:collapse;font-size:.85rem;}
+  th{text-align:left;color:var(--muted);font-weight:600;padding:.4rem .5rem;border-bottom:1px solid var(--border);white-space:nowrap;}
+  td{padding:.4rem .5rem;border-bottom:1px solid var(--border);vertical-align:top;}
+  tr.var-row{cursor:pointer;}
+  tr.var-row:hover td{background:#20303f;}
+  tr.var-row.selected td{background:#1c3348;}
+  tr.var-row.errored td{color:#ff8080;font-style:italic;}
+  .tablewrap{overflow-x:auto;}
+  #previewWrap{overflow:auto;max-height:420px;margin-top:.6rem;border:1px solid var(--border);border-radius:8px;}
+  #previewTable td, #previewTable th{white-space:nowrap;}
+  .truncnote{color:var(--muted);font-size:.82rem;margin-top:.5rem;}
+  button.go{background:var(--accent);color:#04121f;border:none;border-radius:8px;padding:.7rem 1.4rem;font-size:1rem;font-weight:600;cursor:pointer;margin-top:1rem;}
+  button.go:disabled{opacity:.5;cursor:not-allowed;}
+  #exportStatus{color:var(--muted);font-size:.85rem;margin-top:.6rem;white-space:pre-line;}
+  #exportStatus.warn{color:#ffb84f;}
+  .privacy{font-size:.85rem;color:var(--muted);}
+  .privacy strong{color:var(--text);}
+  footer{text-align:center;color:var(--muted);font-size:.82rem;padding:1.5rem 1rem 2.5rem;}
+  footer a{color:var(--accent);}
+</style>
+</head>
+<body>
+<header>
+  <h1>NPY / NPZ to CSV Converter</h1>
+  <p class="sub">Drop in a NumPy <code>.npy</code> array or <code>.npz</code> archive to see its dtype and shape, preview the values as a table, and export it to CSV.</p>
+</header>
+<main>
+  <div class="card">
+    <div class="dropzone" id="dropzone">
+      <div>Drop a .npy or .npz file here, or click to choose</div>
+      <div class="hint">NumPy array files (.npy, .npz) — processed entirely on your device</div>
+      <input type="file" id="fileInput" accept=".npy,.npz">
+    </div>
+    <div class="fname" id="fname"></div>
+    <div id="status"></div>
+  </div>
+
+  <div class="card" id="varsCard" style="display:none;">
+    <h2 id="varsHeading">Arrays</h2>
+    <div class="tablewrap">
+      <table id="varsTable">
+        <thead>
+          <tr><th>Name</th><th>dtype</th><th>Shape</th><th>Order</th><th>Elements</th></tr>
+        </thead>
+        <tbody id="varsBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card" id="previewCard" style="display:none;">
+    <h2 id="previewHeading">Preview</h2>
+    <div id="previewWrap">
+      <table id="previewTable"></table>
+    </div>
+    <div class="truncnote" id="truncNote"></div>
+    <button class="go" id="exportBtn">Export this array to CSV</button>
+    <div id="exportStatus"></div>
+  </div>
+
+  <div class="card">
+    <p class="privacy"><strong>How this works:</strong> this page parses the NPY binary format (and unzips NPZ archives) directly in your browser tab &mdash; the file is read with the File API and never uploaded anywhere. dtype, shape, and byte layout (including Fortran-ordered arrays) are read exactly as NumPy wrote them.</p>
+    <p class="privacy" style="margin-top:.6rem;"><strong>Arrays with more than 2 dimensions:</strong> the first dimension becomes CSV rows, and every remaining dimension is flattened into columns (labeled by their sub-index, e.g. <code>0-1-2</code>), so a 3-D or 4-D array still exports as one flat table.</p>
+    <p class="privacy" style="margin-top:.6rem;"><strong>Structured/record dtypes</strong> (NumPy arrays with named fields) aren't supported yet &mdash; plain numeric, boolean, complex, and string dtypes are.</p>
+  </div>
+
+  <div id="ad-slot"></div>
+</main>
+<script src="fflate.bundle.js"></script>
+<script type="module" src="app.js"></script>
+<script defer src="https://gazetheeupon.github.io/shared-assets/site.js"></script>
+</body>
+</html>
