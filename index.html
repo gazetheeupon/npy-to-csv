@@ -66,6 +66,30 @@
   footer{text-align:center;color:var(--muted);font-size:.82rem;padding:1.5rem 1rem 2.5rem;}
   footer a{color:var(--accent);}
 </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Excel cannot open large .npy array as CSV",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A big array (say, a few million cells) can produce a CSV that's slow or unwieldy for a spreadsheet to open. This page warns before building an unusually large export and blocks anything past a hard limit \u2014 if you hit that, try exporting a smaller variable or a narrower slice."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "dtype shows an error, or \"structured/record dtypes are not supported\"",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "NumPy's structured/record dtypes (arrays with multiple named fields per element, like a mini table packed into one array) aren't parsed by this page yet. Plain numeric, boolean, complex, and string dtypes all work."
+      }
+    }
+  ]
+}
+</script>
 </head>
 <body>
 <header>
